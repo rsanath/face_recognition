@@ -9,3 +9,6 @@
 /build
 /captures
 .externalNativeBuild
+*.class
+build/
+.idea/

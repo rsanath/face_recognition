@@ -57,9 +57,9 @@ class OpenCvFaceDetector(private val context: Context) {
             Size() // maxSize
         )
 
-        highlightFace(grayFrame, faces)
+        highlightFace(input, faces)
 
-        return grayFrame
+        return input
     }
 
     private fun highlightFace(frame: Mat, faces: MatOfRect) {
@@ -70,7 +70,8 @@ class OpenCvFaceDetector(private val context: Context) {
                 frame,
                 it.tl(),
                 it.br(),
-                Scalar(0.0, 255.0, 0.0, 255.0), 2
+                Scalar(255.0, 0.0, 0.0),
+                1
             )
         }
     }
@@ -93,5 +94,11 @@ class OpenCvFaceDetector(private val context: Context) {
         Log.i(TAG, outputFile.absolutePath + " exists?  = " + outputFile.exists())
 
         mFaceCascadeClassifier = CascadeClassifier(outputFile.absolutePath)
+
+        /*
+        The cascade classifier should work by just passing the filename to its constructor
+        but in this case it only loads properly when we give it the xml file via the load method
+         */
+        mFaceCascadeClassifier?.load(outputFile.absolutePath)
     }
 }
