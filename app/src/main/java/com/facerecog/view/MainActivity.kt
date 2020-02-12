@@ -1,10 +1,11 @@
-package com.facerecog
+package com.facerecog.view
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
+import com.facerecog.R
 import com.facerecog.opencv.OpenCvCameraListener
 import com.facerecog.opencv.OpenCvFaceDetector
 import com.facerecog.opencv.OpenCvLoaderCallback
@@ -18,9 +19,9 @@ import org.opencv.core.Mat
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
 
-    private var mOpenCvCameraView: CameraBridgeViewBase? = null
-    private var mOpenCvManagerCallback: OpenCvLoaderCallback? = null
-    private var faceDetector: OpenCvFaceDetector? = null
+    private lateinit var mOpenCvCameraView: CameraBridgeViewBase
+    private lateinit var mOpenCvManagerCallback: OpenCvLoaderCallback
+    private lateinit var faceDetector: OpenCvFaceDetector
 
     private var cameraIndex: Int = 1
 
@@ -34,13 +35,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun switchCamera(view: View) {
-        mOpenCvCameraView?.visibility = View.GONE
+        mOpenCvCameraView.visibility = View.GONE
 
         val newIndex = if (cameraIndex == 0) 1 else 0
         cameraIndex = newIndex
-        mOpenCvCameraView?.setCameraIndex(newIndex)
+        mOpenCvCameraView.setCameraIndex(newIndex)
 
-        mOpenCvCameraView?.visibility = View.VISIBLE
+        mOpenCvCameraView.visibility = View.VISIBLE
     }
 
     private fun onFrame(inputFrame: CameraBridgeViewBase.CvCameraViewFrame): Mat {
@@ -49,16 +50,16 @@ class MainActivity : AppCompatActivity() {
         val flipCode = if (cameraIndex == 0) 1 else -1
 
         Core.flip(outputFrame, outputFrame, flipCode)  // flip camera vertically
-        return faceDetector?.detectFace(outputFrame)!!
+        return faceDetector.detectFace(outputFrame)
     }
 
     private fun initOpenCvManager() {
         mOpenCvManagerCallback = OpenCvLoaderCallback(this)
 
-        mOpenCvManagerCallback?.onManagerConnectionSuccess = {
+        mOpenCvManagerCallback.onManagerConnectionSuccess = {
             initDependencies()
             initCvCamera()
-            mOpenCvCameraView?.enableView()
+            mOpenCvCameraView.enableView()
         }
 
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, mOpenCvManagerCallback)
@@ -66,23 +67,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun initCvCamera() {
         mOpenCvCameraView = findViewById<JavaCameraView>(R.id.openCvCamera)
-        mOpenCvCameraView?.visibility = SurfaceView.VISIBLE
-        mOpenCvCameraView?.enableView()
-        mOpenCvCameraView?.setCameraIndex(cameraIndex)
+        mOpenCvCameraView.visibility = SurfaceView.VISIBLE
+        mOpenCvCameraView.enableView()
+        mOpenCvCameraView.setCameraIndex(cameraIndex)
 
         val cameraListener = OpenCvCameraListener()
         cameraListener.onCameraFrame = { frame -> this.onFrame(frame) }
-        mOpenCvCameraView?.setCvCameraViewListener(cameraListener)
+        mOpenCvCameraView.setCvCameraViewListener(cameraListener)
     }
 
     override fun onResume() {
         super.onResume()
-        mOpenCvCameraView?.enableView()
+        mOpenCvCameraView.enableView()
     }
 
     public override fun onPause() {
         super.onPause()
-        mOpenCvCameraView?.disableView()
+        mOpenCvCameraView.disableView()
     }
 
     private fun initDependencies() {

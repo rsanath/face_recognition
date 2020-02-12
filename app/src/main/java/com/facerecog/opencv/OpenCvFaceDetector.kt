@@ -35,10 +35,7 @@ class OpenCvFaceDetector(private val context: Context) {
 
     fun detectFace(input: Mat): Mat {
         if (mFaceCascadeClassifier?.empty()!!) {
-            val msg = "Cascade classifier is not loaded!. " +
-                    "Either the classifier is corrupt or " +
-                    "the file provided does not exist"
-            Log.w(TAG, msg)
+            Log.w(TAG, "Cascade classifier is not loaded!.")
             return input
         }
 
@@ -56,8 +53,6 @@ class OpenCvFaceDetector(private val context: Context) {
             Size(absoluteFaceSize, absoluteFaceSize),  // faceSize in the frame
             Size() // maxSize
         )
-
-        highlightFace(input, faces)
 
         return input
     }
